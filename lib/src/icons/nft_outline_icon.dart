@@ -4,7 +4,7 @@ class NFTOutlineIcon {
   NFTOutlineIcon._();
 
   static const _kFontFam = 'NFTOutlineIcon';
-  static const String? _kFontPkg = null;
+  static const String? _kFontPkg = 'nft_icons';
 
   static const IconData additem =
       IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);

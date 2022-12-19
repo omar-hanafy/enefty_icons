@@ -4,7 +4,7 @@ class NFTLinearIcon {
   NFTLinearIcon._();
 
   static const _kFontFam = 'NFTLinearIcon';
-  static const String? _kFontPkg = null;
+  static const String? _kFontPkg = 'nft_icons';
 
   static const IconData a_3d_cube_scan =
       IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);

@@ -14,19 +14,16 @@ flutter:
   uses-material-design: true
   generate: true
 
-  assets:
-    - assets/fonts/icons/
-
   fonts:
     - family: NFTBoldIcon
       fonts:
-        - asset: assets/fonts/icons/NFTBoldIcon.ttf
+        - asset: lib/assets/fonts/icons/NFTBoldIcon.ttf
     - family: NFTBrokenIcon
       fonts:
-        - asset: assets/fonts/icons/NFTBrokenIcon.ttf
+        - asset: lib/assets/fonts/icons/NFTBrokenIcon.ttf
     - family: NFTLinearIcon
       fonts:
-        - asset: assets/fonts/icons/NFTLinearIcon.ttf
+        - asset: lib/assets/fonts/icons/NFTLinearIcon.ttf
     - family: NFTOutlineIcon
       fonts:
-        - asset: assets/fonts/icons/NFTOutlineIcon.ttf
+        - asset: lib/assets/fonts/icons/NFTOutlineIcon.ttf
