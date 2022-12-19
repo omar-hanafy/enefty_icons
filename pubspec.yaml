@@ -1,0 +1,32 @@
+name: nft_icons
+description: all Enefty Icons
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: '>=2.18.5 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/fonts/icons/
+
+  fonts:
+    - family: NFTBoldIcon
+      fonts:
+        - asset: assets/fonts/icons/NFTBoldIcon.ttf
+    - family: NFTBrokenIcon
+      fonts:
+        - asset: assets/fonts/icons/NFTBrokenIcon.ttf
+    - family: NFTLinearIcon
+      fonts:
+        - asset: assets/fonts/icons/NFTLinearIcon.ttf
+    - family: NFTOutlineIcon
+      fonts:
+        - asset: assets/fonts/icons/NFTOutlineIcon.ttf
