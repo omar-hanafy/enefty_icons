@@ -25,7 +25,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(child: Icon(NFTLinearIcon.people)),
+      body: Center(child: Icon(EneftyIcons.people_outline)),
     );
   }
 }
