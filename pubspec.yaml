@@ -1,8 +1,7 @@
 name: enefty_icons
 description: Enefty Icons Pack For Flutter
-repository: https://github.com/omar-hanafy/enefty_icons
+repository: https://github.com/omar-hanafy/nft_icons
 version: 1.0.0
-publish_to: 'none'
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

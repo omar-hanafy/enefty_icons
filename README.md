@@ -6,7 +6,7 @@ Each Icon in this [pack](https://www.figma.com/community/file/115860272655050089
 
 # Samples
 
-[![icon gallery preview](./readme-assets/icon_preview_1.0.0.png)](https://api.flutter.dev/flutter/cupertino/CupertinoIcons-class.html)
+[![icon gallery preview](./readme-assets/icon_preview_1.0.0.png)](https://www.figma.com/community/file/1158602726550500895)
 
 # All Icons Preview 
 
