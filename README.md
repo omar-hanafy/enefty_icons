@@ -2,14 +2,15 @@
 
 Enefty is an asset repo containing a set of [icon assets](https://www.figma.com/community/file/1158602726550500895) made by [Pickolab Studio](https://www.figma.com/@PickolabStudio) and Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
-Each Icon in the [pack](https://www.figma.com/community/file/1158602726550500895) containes varius types and this repo only supports two types, Outline and Bold.
+Each Icon in this [pack](https://www.figma.com/community/file/1158602726550500895) containes varius types and this repo only supports two types, Outline and Bold.
 
-# Icons
+# Samples
 
-[![icon gallery preview](gallery_preview_1.0.0.png)](https://api.flutter.dev/flutter/cupertino/CupertinoIcons-class.html)
+[![icon gallery preview](./readme-assets/icon_preview_1.0.0.png)](https://api.flutter.dev/flutter/cupertino/CupertinoIcons-class.html)
 
-For a list of all icons, see
-[`CupertinoIcons` class documentation constants](https://api.flutter.dev/flutter/cupertino/CupertinoIcons-class.html#constants).
+# All Icons Preview 
+
+[This website](https://omar-hanafy.github.io/enefty-icons/#/) contains a preview with a searchable list of all icons.
 
 # Usage
 
@@ -38,4 +39,4 @@ Icon(
 
 # Issues
 
-For issues, create it [here][https://github.com/omar-hanafy/nft-icons/issues]
+For issues, create it in the package repo [here][https://github.com/omar-hanafy/nft-icons/issues]
