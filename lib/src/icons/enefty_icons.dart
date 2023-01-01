@@ -19,7 +19,7 @@ class EneftyIcons {
   EneftyIcons._();
 
   static const _kFontFam = 'EneftyIcons';
-  static const String? _kFontPkg = 'nft_icons';
+  static const String? _kFontPkg = 'enefty_icons';
 
   static const IconData a_3_square_bold =
       IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);

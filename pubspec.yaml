@@ -1,10 +1,11 @@
-name: nft_icons
-description: all Enefty Icons
+name: enefty_icons
+description: Enefty Icons Pack For Flutter
+repository: https://github.com/omar-hanafy/enefty_icons
 version: 1.0.0
 publish_to: 'none'
 
 environment:
-  sdk: '>=2.18.5 <3.0.0'
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
