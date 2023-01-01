@@ -6,7 +6,7 @@ Each Icon in this [pack](https://www.figma.com/community/file/115860272655050089
 
 # Samples
 
-[![icon gallery preview](icon_preview_1.0.0.png)](https://www.figma.com/community/file/1158602726550500895)
+<img src="https://raw.githubusercontent.com/omar-hanafy/nft-icons/main/icon_preview_1.0.0.png" alt="How example looks" width="500"> 
 
 # All Icons Preview 
 
