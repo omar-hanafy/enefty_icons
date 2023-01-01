@@ -1,5 +1,9 @@
+import 'dart:math' as math;
+
+import 'package:enefty_icons/enefty_icons.dart';
 import 'package:example/icon_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -86,21 +90,34 @@ class _IconsPreviewState extends State<IconsPreview> {
             ),
             Expanded(
               child: ListView.builder(
+                  addAutomaticKeepAlives: false,
+                  itemExtent: 100,
                   itemCount: items.length,
                   itemBuilder: (context, index) {
-                    return SizedBox(
-                      height: 100,
-                      child: Card(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-                        child: Center(
-                          child: ListTile(
-                            leading: Icon(
-                              items[index].icon,
-                              size: 50,
-                            ),
-                            title: Text(items[index].title),
+                    final widgetUsage =
+                        'Icon(EneftyIcons.${items[index].title})';
+                    return Card(
+                      margin: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                      child: Center(
+                        child: ListTile(
+                          leading: Icon(
+                            items[index].icon,
+                            size: 50,
+                            color: Colors.primaries[
+                                math.Random().nextInt(Colors.primaries.length)],
                           ),
+                          title: Text(items[index].title),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Text('Usage: $widgetUsage'),
+                          ),
+                          trailing: IconButton(
+                              tooltip: 'Copy Widget',
+                              onPressed: () async {
+                                await Clipboard.setData(
+                                    ClipboardData(text: widgetUsage));
+                              },
+                              icon: Icon(EneftyIcons.copy_outline)),
                         ),
                       ),
                     );
