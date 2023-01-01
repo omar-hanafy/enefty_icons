@@ -1,3 +1,4 @@
+import 'package:example/icon_model.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '',
+      title: 'Enefty Icons',
       home: const IconsPreview(title: 'Enefty Icons Preview'),
     );
   }
@@ -24,8 +25,13 @@ class IconsPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: (context, index) {
-      return ListTile();
-    });
+    return ListView.builder(
+        itemCount: IconModel.icons.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: Icon(IconModel.icons[index].icon),
+            title: Text(IconModel.icons[index].title),
+          );
+        });
   }
 }
