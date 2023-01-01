@@ -1,33 +1,30 @@
 import 'package:example/icon_model.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Enefty Icons',
-      home: const IconsPreview(title: 'Enefty Icons Preview'),
-    );
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: MyHomePage(title: 'ListView with Search'));
   }
 }
 
-class IconsPreview extends StatefulWidget {
-  const IconsPreview({super.key, required this.title});
-
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
-  _IconsPreviewState createState() => _IconsPreviewState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _IconsPreviewState extends State<IconsPreview> {
+class _MyHomePageState extends State<MyHomePage> {
   TextEditingController editingController = TextEditingController();
 
   final allIcons = IconModel.icons;
@@ -40,9 +37,11 @@ class _IconsPreviewState extends State<IconsPreview> {
   }
 
   void filterSearchResults(String query) {
+    List<IconModel> dummySearchList = <IconModel>[];
+    dummySearchList.addAll(allIcons);
     if (query.isNotEmpty) {
       List<IconModel> dummyListData = <IconModel>[];
-      allIcons.forEach((item) {
+      dummySearchList.forEach((item) {
         if (item.title.contains(query)) {
           dummyListData.add(item);
         }
@@ -86,7 +85,7 @@ class _IconsPreviewState extends State<IconsPreview> {
             ),
             Expanded(
               child: ListView.builder(
-                  itemCount: items.length,
+                  itemCount: IconModel.icons.length,
                   itemBuilder: (context, index) {
                     return SizedBox(
                       height: 100,
@@ -96,10 +95,10 @@ class _IconsPreviewState extends State<IconsPreview> {
                         child: Center(
                           child: ListTile(
                             leading: Icon(
-                              items[index].icon,
+                              IconModel.icons[index].icon,
                               size: 50,
                             ),
-                            title: Text(items[index].title),
+                            title: Text(IconModel.icons[index].title),
                           ),
                         ),
                       ),
