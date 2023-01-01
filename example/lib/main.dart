@@ -1,5 +1,5 @@
+import 'package:enefty_icons/enefty_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:nft_icons/nft_icons.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Enefty Icons Example',
       home: MyHomePage(),
     );
   }
@@ -25,7 +25,11 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(child: Icon(EneftyIcons.people_outline)),
+      body: Center(
+        child: Icon(
+          EneftyIcons.people_outline,
+        ),
+      ),
     );
   }
 }
