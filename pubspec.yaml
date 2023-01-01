@@ -15,15 +15,6 @@ flutter:
   generate: true
 
   fonts:
-    - family: NFTBoldIcon
+    - family: EneftyIcons
       fonts:
-        - asset: lib/assets/fonts/icons/NFTBoldIcon.ttf
-    - family: NFTBrokenIcon
-      fonts:
-        - asset: lib/assets/fonts/icons/NFTBrokenIcon.ttf
-    - family: NFTLinearIcon
-      fonts:
-        - asset: lib/assets/fonts/icons/NFTLinearIcon.ttf
-    - family: NFTOutlineIcon
-      fonts:
-        - asset: lib/assets/fonts/icons/NFTOutlineIcon.ttf
+        - asset: lib/assets/fonts/icons/EneftyIcons.ttf
