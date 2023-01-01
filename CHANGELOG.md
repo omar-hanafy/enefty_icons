@@ -10,3 +10,7 @@
 
  - **FIX**: fix wrong GitHub link
 
+## 1.0.3
+
+ - **FIX**: fix image preview not showing in pub.dev
+
