@@ -39,4 +39,4 @@ Icon(
 
 # Issues
 
-For issues, create it in the package repo [here][https://github.com/omar-hanafy/nft-icons/issues]
+For issues, create it in the package repo [here](https://github.com/omar-hanafy/nft-icons/issues)
