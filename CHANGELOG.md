@@ -8,5 +8,5 @@
 
 ## 1.0.2
 
- - **FIX**: fix image not showing
+ - **FIX**: fix wrong GitHub link
 
