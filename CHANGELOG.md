@@ -4,5 +4,9 @@
 
 ## 1.0.1
 
- - **FIX**: fix readme file image not showing
+ - **UPDATE**: update readme file
+
+## 1.0.2
+
+ - **FIX**: fix image not showing
 
