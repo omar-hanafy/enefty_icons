@@ -1,14 +1,17 @@
 # Enefty Icons
 
-Enefty is an asset repo containing a set of [icon assets](https://www.figma.com/community/file/1158602726550500895) made by [Pickolab Studio](https://www.figma.com/@PickolabStudio) and Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+Enefty is an asset repo containing a set of [icon assets](https://www.figma.com/community/file/1158602726550500895) made
+by [Pickolab Studio](https://www.figma.com/@PickolabStudio) and Licensed
+under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
-Each Icon in this [pack](https://www.figma.com/community/file/1158602726550500895) containes varius types and this repo only supports two types, Outline and Bold.
+Each Icon in this [pack](https://www.figma.com/community/file/1158602726550500895) containes varius types and this repo
+only supports two types, Outline and Bold.
 
 # Samples
 
-<img src="https://raw.githubusercontent.com/omar-hanafy/nft-icons/main/icon_preview_1.0.0.png" alt="How example looks" width="500"> 
+<p> <a href="https://omar-hanafy.github.io/enefty-icons/#/"><img src="https://raw.githubusercontent.com/omar-hanafy/nft-icons/main/icon_preview_1.0.0.png" alt="How example looks" width="500"> </a></p>
 
-# All Icons Preview 
+# All Icons Preview
 
 [This website](https://omar-hanafy.github.io/enefty-icons/#/) contains a preview with a searchable list of all icons.
 
@@ -32,9 +35,10 @@ import 'package:enefty_icons/enefty_icons.dart';
 2- Use it just like any Icon
 
 ```dart
-Icon(
-  EneftyIcons.people_outline,
-  ),
+Icon
+(
+EneftyIcons.people_outline,)
+,
 ```
 
 # Issues

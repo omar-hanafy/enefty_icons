@@ -1,9 +1,11 @@
 import 'dart:math' as math;
 
 import 'package:enefty_icons/enefty_icons.dart';
-import 'package:example/icon_model.dart';
+import 'package:enefty_icons_preview/global_functions.dart';
+import 'package:enefty_icons_preview/icon_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
   runApp(const MyApp());
@@ -64,6 +66,31 @@ class _IconsPreviewState extends State<IconsPreview> {
     }
   }
 
+  void _showToast({String text = ' ', Color? color = Colors.grey}) {
+    final isMobile = mounted ? MediaQuery.of(context).size.width < 600 : false;
+    Fluttertoast.showToast(
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 2,
+      backgroundColor: color!,
+      textColor: GlobalFunctions.pickColorBasedOnBgColor(
+          bgColor: color.value.toString()),
+      webBgColor: color.toHex(),
+      webPosition: isMobile ? 'center' : 'right',
+      fontSize: 16.0,
+    );
+  }
+
+  Future<void> copyText({String? text, Color? color}) async {
+    try {
+      await Clipboard.setData(ClipboardData(text: text));
+      _showToast(text: 'Widget Copied 🥳', color: color);
+    } catch (e) {
+      _showToast(text: 'Copy Failed 🥲');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,6 +121,8 @@ class _IconsPreviewState extends State<IconsPreview> {
                   itemExtent: 100,
                   itemCount: items.length,
                   itemBuilder: (context, index) {
+                    final randomColor = Colors.primaries[
+                        math.Random().nextInt(Colors.primaries.length)];
                     final widgetUsage =
                         'Icon(EneftyIcons.${items[index].title})';
                     return Card(
@@ -103,20 +132,17 @@ class _IconsPreviewState extends State<IconsPreview> {
                           leading: Icon(
                             items[index].icon,
                             size: 50,
-                            color: Colors.primaries[
-                                math.Random().nextInt(Colors.primaries.length)],
+                            color: randomColor,
                           ),
-                          title: Text(items[index].title),
+                          title: SelectableText(items[index].title),
                           subtitle: Padding(
                             padding: const EdgeInsets.only(top: 5.0),
-                            child: Text('Usage: $widgetUsage'),
+                            child: SelectableText('Usage: $widgetUsage'),
                           ),
                           trailing: IconButton(
                               tooltip: 'Copy Widget',
-                              onPressed: () async {
-                                await Clipboard.setData(
-                                    ClipboardData(text: widgetUsage));
-                              },
+                              onPressed: () => copyText(
+                                  text: widgetUsage, color: randomColor),
                               icon: Icon(EneftyIcons.copy_outline)),
                         ),
                       ),

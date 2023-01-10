@@ -15,9 +15,7 @@
 ///
 import 'package:flutter/widgets.dart';
 
-class EneftyIcons {
-  EneftyIcons._();
-
+abstract class EneftyIcons {
   static const _kFontFam = 'EneftyIcons';
   static const String? _kFontPkg = 'enefty_icons';
 
