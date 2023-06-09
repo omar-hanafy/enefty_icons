@@ -35,10 +35,7 @@ import 'package:enefty_icons/enefty_icons.dart';
 2- Use it just like any Icon
 
 ```dart
-Icon
-(
-EneftyIcons.people_outline,)
-,
+Icon(EneftyIcons.people_outline),
 ```
 
 # Issues
