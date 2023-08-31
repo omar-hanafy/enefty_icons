@@ -1,20 +1,31 @@
-## 1.0.0
+## [1.0.5]
 
-- **INITIAL**: initial release
+### Updated
+- Upgraded to Flutter 3.13.
+- Enhanced README documentation.
 
-## 1.0.1
+## [1.0.4]
 
-- **UPDATE**: update readme file
+### Updated
+- Added icon preview website to the repository.
+- Updated documentation.
 
-## 1.0.2
+## [1.0.3]
 
-- **FIX**: fix wrong GitHub link
+### Fixed
+- Resolved image preview not displaying on pub.dev.
 
-## 1.0.3
+## [1.0.2]
 
-- **FIX**: fix image preview not showing in pub.dev
+### Fixed
+- Corrected incorrect GitHub link.
 
-## 1.0.4
+## [1.0.1]
 
-- **UPDATE**: add icon preview website to the repo, and update documentation,
+### Updated
+- Revised README file.
 
+## [1.0.0]
+
+### Added
+- Initial release.

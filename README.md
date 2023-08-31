@@ -1,43 +1,45 @@
 # Enefty Icons
 
-Enefty is an asset repo containing a set of [icon assets](https://www.figma.com/community/file/1158602726550500895) made
-by [Pickolab Studio](https://www.figma.com/@PickolabStudio) and Licensed
-under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+Enefty Icons is a collection of icon assets
+designed by [Pickolab Studio](https://www.figma.com/@PickolabStudio),
+licensed under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) framework.
 
-Each Icon in this [pack](https://www.figma.com/community/file/1158602726550500895) containes varius types and this repo
-only supports two types, Outline and Bold.
+The repository specifically features two styles of icons: Outline and Bold.
 
-# Samples
+## Samples
 
-<p> <a href="https://omar-hanafy.github.io/enefty-icons/#/"><img src="https://raw.githubusercontent.com/omar-hanafy/nft-icons/main/icon_preview_1.0.0.png" alt="How example looks" width="500"> </a></p>
+![Icon Samples](https://raw.githubusercontent.com/omar-hanafy/enefty_icons/main/icon_preview_1.0.0.png)
+*Click the image to view a live demo on the [Enefty Icons website](https://omar-hanafy.github.io/enefty-icons/#/).*
 
-# All Icons Preview
+## Icons Preview
 
-[This website](https://omar-hanafy.github.io/enefty-icons/#/) contains a preview with a searchable list of all icons.
+Visit [this website](https://omar-hanafy.github.io/enefty-icons/#/) for a searchable list and preview of all available icons.
 
-# Usage
+## Installation and Usage
 
 [![pub package](https://img.shields.io/pub/v/enefty_icons)](https://pub.dev/packages/enefty_icons)
 
+To install the package, add the following line to your `pubspec.yaml`:
+
 ```yaml
 dependencies:
-  enefty_icons: ^<latest-version>
+  enefty_icons: ^1.0.5
 ```
 
-# Example
+### Example Usage
 
-1- Import the repo
+1. **Import the package**
 
-```dart
-import 'package:enefty_icons/enefty_icons.dart';
-```
+    ```dart
+    import 'package:enefty_icons/enefty_icons.dart';
+    ```
 
-2- Use it just like any Icon
+2. **Use the icons**
 
-```dart
-Icon(EneftyIcons.people_outline),
-```
+    ```dart
+    Icon(EneftyIcons.people_outline),
+    ```
 
-# Issues
+## Reporting Issues
 
-For issues, create it in the package repo [here](https://github.com/omar-hanafy/nft-icons/issues)
+For any issues or concerns, please [create a new issue](https://github.com/omar-hanafy/enefty_icons/issues) in the package repository.

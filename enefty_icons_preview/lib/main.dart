@@ -5,6 +5,8 @@ import 'package:enefty_icons_preview/global_functions.dart';
 import 'package:enefty_icons_preview/icon_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_helper_utils/flutter_helper_utils.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
@@ -84,8 +86,10 @@ class _IconsPreviewState extends State<IconsPreview> {
 
   Future<void> copyText({String? text, Color? color}) async {
     try {
-      await Clipboard.setData(ClipboardData(text: text));
-      _showToast(text: 'Widget Copied 🥳', color: color);
+      if (text.isNotEmptyOrNull) {
+        await Clipboard.setData(ClipboardData(text: text!));
+        _showToast(text: 'Widget Copied 🥳', color: color);
+      }
     } catch (e) {
       _showToast(text: 'Copy Failed 🥲');
     }
@@ -96,6 +100,21 @@ class _IconsPreviewState extends State<IconsPreview> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        leading: GestureDetector(
+          onTap: () => GlobalFunctions.launchLink(
+            'https:www.github.com/omar-hanafy/enefty_icons',
+          ),
+          child: FocusableActionDetector(
+            mouseCursor: SystemMouseCursors.click,
+            child: Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(10),
+              child: SvgPicture.asset(
+                'assets/github.svg',
+              ),
+            ),
+          ),
+        ),
       ),
       body: Container(
         child: Column(
@@ -140,10 +159,11 @@ class _IconsPreviewState extends State<IconsPreview> {
                             child: SelectableText('Usage: $widgetUsage'),
                           ),
                           trailing: IconButton(
-                              tooltip: 'Copy Widget',
-                              onPressed: () => copyText(
-                                  text: widgetUsage, color: randomColor),
-                              icon: Icon(EneftyIcons.copy_outline)),
+                            tooltip: 'Copy Widget',
+                            onPressed: () =>
+                                copyText(text: widgetUsage, color: randomColor),
+                            icon: Icon(EneftyIcons.copy_outline),
+                          ),
                         ),
                       ),
                     );
