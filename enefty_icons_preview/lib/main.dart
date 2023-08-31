@@ -102,7 +102,7 @@ class _IconsPreviewState extends State<IconsPreview> {
         title: Text(widget.title),
         leading: GestureDetector(
           onTap: () => GlobalFunctions.launchLink(
-            'https:www.github.com/omar-hanafy/enefty_icons',
+            'https://www.github.com/omar-hanafy/enefty_icons',
           ),
           child: FocusableActionDetector(
             mouseCursor: SystemMouseCursors.click,
