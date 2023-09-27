@@ -9,11 +9,8 @@ The repository specifically features two styles of icons: Outline and Bold.
 ## Samples
 
 <p> <a href="https://omar-hanafy.github.io/enefty-icons/#/"><img src="https://raw.githubusercontent.com/omar-hanafy/nft-icons/main/icon_preview_1.0.0.png" alt="How example looks" width="500"> </a></p>
+
 Click the image to view a live demo on the [Enefty Icons website](https://omar-hanafy.github.io/enefty-icons/#/).
-
-## Icons Preview
-
-Visit [this website](https://omar-hanafy.github.io/enefty-icons/#/) for a searchable list and preview of all available icons.
 
 ## Installation and Usage
 
@@ -30,15 +27,15 @@ dependencies:
 
 1. **Import the package**
 
-    ```dart
-    import 'package:enefty_icons/enefty_icons.dart';
-    ```
+   ```dart
+   import 'package:enefty_icons/enefty_icons.dart';
+   ```
 
 2. **Use the icons**
 
-    ```dart
-    Icon(EneftyIcons.people_outline),
-    ```
+   ```dart
+   Icon(EneftyIcons.people_outline),
+   ```
 
 ## Reporting Issues
 
