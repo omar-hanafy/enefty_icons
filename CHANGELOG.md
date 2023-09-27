@@ -1,3 +1,8 @@
+## [1.0.6]
+
+### Updated 
+- Fixed click on image does not open the preview website.
+
 ## [1.0.5]
 
 ### Updated
