@@ -1,36 +1,41 @@
-## [1.0.6]
+## Version 1.0.6
 
-### Updated 
-- Fixed click on image does not open the preview website.
+- Resolved an issue where clicking on an image failed to open the preview website.
 
-## [1.0.5]
+---
 
-### Updated
-- Upgraded to Flutter 3.13.
-- Enhanced README documentation.
+## Version 1.0.5
 
-## [1.0.4]
+- Migrated to Flutter version 3.13.
+- Improved the README documentation for better clarity.
 
-### Updated
-- Added icon preview website to the repository.
-- Updated documentation.
+---
 
-## [1.0.3]
+## Version 1.0.4
 
-### Fixed
-- Resolved image preview not displaying on pub.dev.
+- Introduced an icon preview website and linked it to the repository.
+- Made enhancements to the existing documentation.
 
-## [1.0.2]
+---
 
-### Fixed
-- Corrected incorrect GitHub link.
+## Version 1.0.3
 
-## [1.0.1]
+- Fixed the issue where the image preview was not displayed on pub.dev.
 
-### Updated
-- Revised README file.
+---
 
-## [1.0.0]
+## Version 1.0.2
 
-### Added
-- Initial release.
+- Corrected the GitHub link that was previously incorrect.
+
+---
+
+## Version 1.0.1
+
+- Overhauled the README file for better readability.
+
+---
+
+## Version 1.0.0
+
+- Initial release of the package.
