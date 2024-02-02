@@ -99,7 +99,11 @@ class _IconsPreviewState extends State<IconsPreview> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        backgroundColor: Colors.white,
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Colors.black),
+        ),
         leading: GestureDetector(
           onTap: () => GlobalFunctions.launchLink(
             'https://www.github.com/omar-hanafy/enefty_icons',
