@@ -52,10 +52,9 @@ packages:
   enefty_icons:
     dependency: "direct main"
     description:
-      name: enefty_icons
-      sha256: "59be0308964b2be29eb64707a1afcb991d2b27167a4b17b7ff9866aa22f9b9cc"
-      url: "https://pub.dev"
-    source: hosted
+      path: ".."
+      relative: true
+    source: path
     version: "1.0.7"
   fake_async:
     dependency: transitive
@@ -74,10 +73,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_helper_utils
-      sha256: "834f30530049e32dc93710df783eeedf20541428c22efa0e6a7d4dc737ff25c0"
+      sha256: "149e7d8ba86d7f07a85edb9ffba500f3c355d9e5c4b90358fdbf52beef96959a"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.4"
+    version: "3.0.6"
   flutter_svg:
     dependency: "direct main"
     description:

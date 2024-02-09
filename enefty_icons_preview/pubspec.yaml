@@ -13,8 +13,9 @@ dependencies:
     sdk: flutter
   fluttertoast: ^8.2.4
   flutter_svg: ^2.0.9
-  enefty_icons: ^1.0.7
-  flutter_helper_utils: ^3.0.4
+  enefty_icons:
+    path: ../
+  flutter_helper_utils: ^3.0.6
   url_launcher: ^6.2.4
 
 dev_dependencies:
