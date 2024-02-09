@@ -1,7 +1,7 @@
 name: enefty_icons_preview
-description: A new Flutter project.
+description: "Preview for the Enefty Icons flutter pack, featuring a comprehensive collection with a 'Copy Widget' option for easy integration into Flutter projects."
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 
 version: 2.0.0+2
 
@@ -13,11 +13,10 @@ dependencies:
     sdk: flutter
   fluttertoast: ^8.2.4
   flutter_svg: ^2.0.9
-  enefty_icons:
-    path: ../
+  enefty_icons: ^1.0.7
   flutter_helper_utils: ^3.0.6
   url_launcher: ^6.2.4
-
+  flutter_watcher: ^2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -7,7 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_helper_utils/flutter_helper_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_watcher/flutter_watcher.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+final CachedWatcher<bool?> themeModeWatcher =
+    BoolCachedWatcherNullable(null, 'themeMode');
+
+final isCopyModeName = true.cachedWatcher('isCopyModeName');
 
 void main() {
   runApp(const MyApp());
@@ -19,9 +25,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Enefty Icons',
-      home: const IconsPreview(title: 'Enefty Icons Preview'),
+    return WatchValue(
+      watcher: themeModeWatcher,
+      builder: (context, isDark) {
+        return MaterialApp(
+          themeMode: isDark == null
+              ? ThemeMode.system
+              : isDark
+                  ? ThemeMode.dark
+                  : ThemeMode.light,
+          darkTheme: ThemeData.dark(),
+          theme: ThemeData.light(),
+          title: 'Enefty Icons',
+          home: const IconsPreview(title: 'Enefty Icons Preview'),
+        );
+      },
     );
   }
 }
@@ -95,15 +113,35 @@ class _IconsPreviewState extends State<IconsPreview> {
     }
   }
 
+  String getCopyText(IconModel icon) {
+    // Determine what text to copy based on the toggle's state
+    return isCopyModeName.v
+        ? 'EneftyIcons.${icon.title}'
+        : 'Icon(EneftyIcons.${icon.title})';
+  }
+
   @override
   Widget build(BuildContext context) {
+    // _updateModeIfNull(context.sysBrightness.isDark);
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
         title: Text(
           widget.title,
-          style: TextStyle(color: Colors.black),
+          // style: TextStyle(color: Colors.black),
         ),
+        actions: [
+          themeModeWatcher.watchValue((value) {
+            final isDark = value ?? context.sysBrightness.isDark;
+            return IconButton(
+              icon: Icon(
+                isDark ? Icons.dark_mode : Icons.dark_mode_outlined,
+              ),
+              onPressed: () => themeModeWatcher.v = !isDark,
+            );
+          }),
+        ],
         leading: GestureDetector(
           onTap: () => GlobalFunctions.launchLink(
             'https://www.github.com/omar-hanafy/enefty_icons',
@@ -138,40 +176,50 @@ class _IconsPreviewState extends State<IconsPreview> {
                         borderRadius: BorderRadius.all(Radius.circular(25.0)))),
               ),
             ),
+            isCopyModeName.watchValue(
+              (isName) => SwitchListTile(
+                title: Text("Copy Mode: " + (isName ? "Name" : "Widget")),
+                value: isName,
+                onChanged: (value) => isCopyModeName.v = value,
+              ),
+            ),
             Expanded(
               child: ListView.builder(
-                  addAutomaticKeepAlives: false,
-                  itemExtent: 100,
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final randomColor = Colors.primaries[
-                        math.Random().nextInt(Colors.primaries.length)];
-                    final widgetUsage =
-                        'Icon(EneftyIcons.${items[index].title})';
-                    return Card(
-                      margin: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-                      child: Center(
-                        child: ListTile(
-                          leading: Icon(
-                            items[index].icon,
-                            size: 50,
+                addAutomaticKeepAlives: false,
+                itemExtent: 100,
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  final randomColor = Colors.primaries[
+                      math.Random().nextInt(Colors.primaries.length)];
+                  final icon = items[index];
+                  return Card(
+                    margin: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                    child: Center(
+                      child: ListTile(
+                        leading: Icon(
+                          items[index].icon,
+                          size: 50,
+                          color: randomColor,
+                        ),
+                        title: SelectableText(items[index].title),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: SelectableText(
+                              'Usage: Icon(EneftyIcons.${icon.title})'),
+                        ),
+                        trailing: IconButton(
+                          tooltip: 'Copy Widget',
+                          onPressed: () => copyText(
+                            text: getCopyText(icon),
                             color: randomColor,
                           ),
-                          title: SelectableText(items[index].title),
-                          subtitle: Padding(
-                            padding: const EdgeInsets.only(top: 5.0),
-                            child: SelectableText('Usage: $widgetUsage'),
-                          ),
-                          trailing: IconButton(
-                            tooltip: 'Copy Widget',
-                            onPressed: () =>
-                                copyText(text: widgetUsage, color: randomColor),
-                            icon: Icon(EneftyIcons.copy_outline),
-                          ),
+                          icon: Icon(EneftyIcons.copy_outline),
                         ),
                       ),
-                    );
-                  }),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
