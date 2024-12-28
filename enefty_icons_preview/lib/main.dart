@@ -1,229 +1,185 @@
 import 'dart:math' as math;
 
-import 'package:enefty_icons/enefty_icons.dart';
 import 'package:enefty_icons_preview/global_functions.dart';
 import 'package:enefty_icons_preview/icon_model.dart';
+import 'package:enefty_icons_preview/tile_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_helper_utils/flutter_helper_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_watcher/flutter_watcher.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
-final CachedWatcher<bool?> themeModeWatcher =
-    BoolCachedWatcherNullable(null, 'themeMode');
-
-final isCopyModeName = true.cachedWatcher('isCopyModeName');
+import 'services/settings_service.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const AppRoot());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+/// The root widget of the application.
+class AppRoot extends StatefulWidget {
+  const AppRoot({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<AppRoot> createState() => _AppRootState();
+}
+
+class _AppRootState extends State<AppRoot> {
+  final _settings = SettingsService();
+
   @override
   Widget build(BuildContext context) {
-    return WatchValue(
-      watcher: themeModeWatcher,
-      builder: (context, isDark) {
-        return MaterialApp(
-          themeMode: isDark == null
-              ? ThemeMode.system
-              : isDark
-                  ? ThemeMode.dark
-                  : ThemeMode.light,
-          darkTheme: ThemeData.dark(),
-          theme: ThemeData.light(),
-          title: 'Enefty Icons',
-          home: const IconsPreview(title: 'Enefty Icons Preview'),
-        );
-      },
-    );
+    return _settings.isDark.builder((isDark) {
+      return MaterialApp(
+        title: 'Enefty Icons',
+        themeMode: isDark == null
+            ? ThemeMode.system
+            : isDark
+                ? ThemeMode.dark
+                : ThemeMode.light,
+        theme: ThemeData.light(),
+        darkTheme: ThemeData.dark(),
+        home: const IconsPreviewPage(),
+      );
+    });
   }
 }
 
-class IconsPreview extends StatefulWidget {
-  const IconsPreview({super.key, required this.title});
-
-  final String title;
+/// A page that previews all Enefty Icons with searching and copying functionalities.
+class IconsPreviewPage extends StatefulWidget {
+  const IconsPreviewPage({super.key});
 
   @override
-  _IconsPreviewState createState() => _IconsPreviewState();
+  State<IconsPreviewPage> createState() => _IconsPreviewPageState();
 }
 
-class _IconsPreviewState extends State<IconsPreview> {
-  TextEditingController editingController = TextEditingController();
+class _IconsPreviewPageState extends State<IconsPreviewPage> {
+  final _settings = SettingsService();
 
-  final allIcons = IconModel.icons;
-  var items = <IconModel>[];
+  /// Controller for the search TextField.
+  final TextEditingController _searchController = TextEditingController();
+
+  /// All available icons from the IconModel.
+  final List<IconModel> _allIcons = IconModel.icons;
+
+  /// Icons filtered according to the current search query.
+  late List<IconModel> _filteredIcons;
 
   @override
   void initState() {
-    items.addAll(allIcons);
     super.initState();
-  }
-
-  void filterSearchResults(String query) {
-    if (query.isNotEmpty) {
-      List<IconModel> dummyListData = <IconModel>[];
-      allIcons.forEach((item) {
-        if (item.title.contains(query)) {
-          dummyListData.add(item);
-        }
-      });
-      setState(() {
-        items.clear();
-        items.addAll(dummyListData);
-      });
-      return;
-    } else {
-      setState(() {
-        items.clear();
-        items.addAll(allIcons);
-      });
-    }
-  }
-
-  void _showToast({String text = ' ', Color? color = Colors.grey}) {
-    final isMobile = mounted ? MediaQuery.of(context).size.width < 600 : false;
-    Fluttertoast.showToast(
-      msg: text,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 2,
-      backgroundColor: color!,
-      textColor: GlobalFunctions.pickColorBasedOnBgColor(
-          bgColor: color.value.toString()),
-      webBgColor: color.toHex(),
-      webPosition: isMobile ? 'center' : 'right',
-      fontSize: 16.0,
-    );
-  }
-
-  Future<void> copyText({String? text, Color? color}) async {
-    try {
-      if (text.isNotEmptyOrNull) {
-        await Clipboard.setData(ClipboardData(text: text!));
-        _showToast(text: 'Widget Copied 🥳', color: color);
-      }
-    } catch (e) {
-      _showToast(text: 'Copy Failed 🥲');
-    }
-  }
-
-  String getCopyText(IconModel icon) {
-    // Determine what text to copy based on the toggle's state
-    return isCopyModeName.v
-        ? 'EneftyIcons.${icon.title}'
-        : 'Icon(EneftyIcons.${icon.title})';
+    _filteredIcons = List.from(_allIcons);
   }
 
   @override
   Widget build(BuildContext context) {
-    // _updateModeIfNull(context.sysBrightness.isDark);
-
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Colors.white,
-        title: Text(
-          widget.title,
-          // style: TextStyle(color: Colors.black),
-        ),
+        title: const Text('Enefty Icons Preview'),
+        leading: _buildGitHubButton(),
         actions: [
-          themeModeWatcher.watchValue((value) {
-            final isDark = value ?? context.sysBrightness.isDark;
-            return IconButton(
-              icon: Icon(
-                isDark ? Icons.dark_mode : Icons.dark_mode_outlined,
-              ),
-              onPressed: () => themeModeWatcher.v = !isDark,
-            );
-          }),
+          _buildThemeToggle(),
         ],
-        leading: GestureDetector(
-          onTap: () => GlobalFunctions.launchLink(
-            'https://www.github.com/omar-hanafy/enefty_icons',
-          ),
-          child: FocusableActionDetector(
-            mouseCursor: SystemMouseCursors.click,
-            child: Container(
-              color: Colors.white,
-              padding: EdgeInsets.all(10),
-              child: SvgPicture.asset(
-                'assets/github.svg',
-              ),
-            ),
-          ),
-        ),
       ),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                onChanged: (value) {
-                  filterSearchResults(value);
-                },
-                controller: editingController,
-                decoration: InputDecoration(
-                    labelText: "Search",
-                    hintText: "Search",
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-              ),
-            ),
-            isCopyModeName.watchValue(
-              (isName) => SwitchListTile(
-                title: Text("Copy Mode: " + (isName ? "Name" : "Widget")),
-                value: isName,
-                onChanged: (value) => isCopyModeName.v = value,
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                addAutomaticKeepAlives: false,
-                itemExtent: 100,
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  final randomColor = Colors.primaries[
-                      math.Random().nextInt(Colors.primaries.length)];
-                  final icon = items[index];
-                  return Card(
-                    margin: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-                    child: Center(
-                      child: ListTile(
-                        leading: Icon(
-                          items[index].icon,
-                          size: 50,
-                          color: randomColor,
-                        ),
-                        title: SelectableText(items[index].title),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
-                          child: SelectableText(
-                              'Usage: Icon(EneftyIcons.${icon.title})'),
-                        ),
-                        trailing: IconButton(
-                          tooltip: 'Copy Widget',
-                          onPressed: () => copyText(
-                            text: getCopyText(icon),
-                            color: randomColor,
-                          ),
-                          icon: Icon(EneftyIcons.copy_outline),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+      body: Column(
+        children: [
+          _buildSearchBar(),
+          _buildCopyModeToggle(),
+          Expanded(child: _buildIconsList()),
+        ],
+      ),
+    );
+  }
+
+  /// A button that navigates to the Enefty Icons GitHub page.
+  Widget _buildGitHubButton() {
+    return GestureDetector(
+      onTap: () => GlobalFunctions.launchLink(
+        'https://www.github.com/omar-hanafy/enefty_icons',
+      ),
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        child: Container(
+          color: Colors.white,
+          padding: EdgeInsets.all(10),
+          child: SvgPicture.asset('assets/github.svg'),
         ),
       ),
     );
+  }
+
+  /// An [IconButton] that toggles between Dark and Light modes.
+  Widget _buildThemeToggle() {
+    return _settings.isDark.builder((value) {
+      final isDark = value ?? context.sysBrightness.isDark;
+      return IconButton(
+        icon: Icon(isDark ? Icons.dark_mode : Icons.dark_mode_outlined),
+        onPressed: () => _settings.setThemeMode(!isDark),
+      );
+    });
+  }
+
+  /// A [TextField] used for searching icons.
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        controller: _searchController,
+        decoration: const InputDecoration(
+          labelText: 'Search',
+          hintText: 'Type an icon name...',
+          prefixIcon: Icon(Icons.search),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(25.0)),
+          ),
+        ),
+        onChanged: _filterIcons,
+      ),
+    );
+  }
+
+  /// A toggle switch to indicate if we copy just the icon name or the widget snippet.
+  Widget _buildCopyModeToggle() {
+    return _settings.copyModeNotifier.builder((isNameMode) {
+      return SwitchListTile(
+        title: Text('Copy Mode: ${isNameMode ? "Name" : "Widget"}'),
+        value: isNameMode,
+        onChanged: _settings.setCopyMode,
+      );
+    });
+  }
+
+  /// Builds the list of icons as cards with copy functionality.
+  Widget _buildIconsList() {
+    return ListView.builder(
+      itemCount: _filteredIcons.length,
+      itemBuilder: (context, index) {
+        final icon = _filteredIcons[index];
+        final randomColor =
+            Colors.primaries[math.Random().nextInt(Colors.primaries.length)];
+
+        return TileCard(color: randomColor, iconModel: icon);
+      },
+    );
+  }
+
+  /// Filters the icons based on the user's search query.
+  /// The search is case-insensitive and checks if the icon title contains
+  /// all "words" typed by the user in any order (enhanced matching).
+  void _filterIcons(String query) {
+    final trimmedQuery = query.trim().toLowerCase();
+
+    if (trimmedQuery.isEmpty) {
+      setState(() => _filteredIcons = List.from(_allIcons));
+      return;
+    }
+
+    final searchWords = trimmedQuery.split(RegExp(r'\s+'));
+
+    setState(() {
+      _filteredIcons = _allIcons.where((icon) {
+        final title = icon.title.toLowerCase();
+        // Ensure every query word is contained in the title
+        return searchWords.every(title.contains);
+      }).toList();
+    });
   }
 }
