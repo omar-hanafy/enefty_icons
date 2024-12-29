@@ -1,13 +1,14 @@
 import 'dart:math' as math;
 
-import 'package:enefty_icons_preview/global_functions.dart';
+import 'package:enefty_icons/enefty_icons.dart';
 import 'package:enefty_icons_preview/icon_model.dart';
-import 'package:enefty_icons_preview/tile_card.dart';
+import 'package:enefty_icons_preview/settings_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_helper_utils/flutter_helper_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import 'services/settings_service.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,14 +28,10 @@ class _AppRootState extends State<AppRoot> {
 
   @override
   Widget build(BuildContext context) {
-    return _settings.isDark.builder((isDark) {
+    return _settings.themeMode.builder((mode) {
       return MaterialApp(
         title: 'Enefty Icons',
-        themeMode: isDark == null
-            ? ThemeMode.system
-            : isDark
-                ? ThemeMode.dark
-                : ThemeMode.light,
+        themeMode: mode,
         theme: ThemeData.light(),
         darkTheme: ThemeData.dark(),
         home: const IconsPreviewPage(),
@@ -62,6 +59,9 @@ class _IconsPreviewPageState extends State<IconsPreviewPage> {
 
   /// Icons filtered according to the current search query.
   late List<IconModel> _filteredIcons;
+
+  // Add threshold constant
+  static const double _similarityThreshold = 0.4;
 
   @override
   void initState() {
@@ -92,8 +92,8 @@ class _IconsPreviewPageState extends State<IconsPreviewPage> {
   /// A button that navigates to the Enefty Icons GitHub page.
   Widget _buildGitHubButton() {
     return GestureDetector(
-      onTap: () => GlobalFunctions.launchLink(
-        'https://www.github.com/omar-hanafy/enefty_icons',
+      onTap: () => launchUrl(
+        Uri.parse('https://www.github.com/omar-hanafy/enefty_icons'),
       ),
       child: FocusableActionDetector(
         mouseCursor: SystemMouseCursors.click,
@@ -108,11 +108,12 @@ class _IconsPreviewPageState extends State<IconsPreviewPage> {
 
   /// An [IconButton] that toggles between Dark and Light modes.
   Widget _buildThemeToggle() {
-    return _settings.isDark.builder((value) {
-      final isDark = value ?? context.sysBrightness.isDark;
+    return _settings.themeMode.builder((mode) {
+      final isDark = mode.getBrightness(context).isDark;
       return IconButton(
         icon: Icon(isDark ? Icons.dark_mode : Icons.dark_mode_outlined),
-        onPressed: () => _settings.setThemeMode(!isDark),
+        onPressed: () =>
+            _settings.setThemeMode(isDark ? ThemeMode.light : ThemeMode.dark),
       );
     });
   }
@@ -161,9 +162,7 @@ class _IconsPreviewPageState extends State<IconsPreviewPage> {
     );
   }
 
-  /// Filters the icons based on the user's search query.
-  /// The search is case-insensitive and checks if the icon title contains
-  /// all "words" typed by the user in any order (enhanced matching).
+  /// Filters the icons based on the user's search query using similarity matching.
   void _filterIcons(String query) {
     final trimmedQuery = query.trim().toLowerCase();
 
@@ -177,9 +176,99 @@ class _IconsPreviewPageState extends State<IconsPreviewPage> {
     setState(() {
       _filteredIcons = _allIcons.where((icon) {
         final title = icon.title.toLowerCase();
-        // Ensure every query word is contained in the title
-        return searchWords.every(title.contains);
+
+        // Check if any search word has sufficient similarity with the title
+        return searchWords.any((word) {
+          final similarity = word.compareWith(
+            title,
+            SimilarityAlgorithm.jaroWinkler,
+          );
+          return similarity >= _similarityThreshold;
+        });
       }).toList();
+
+      // Sort results by similarity score for better relevance
+      _filteredIcons.sort((a, b) {
+        final similarityA = searchWords.map((word) {
+          return word.compareWith(
+            a.title.toLowerCase(),
+            SimilarityAlgorithm.jaroWinkler,
+          );
+        }).reduce((max, value) => value > max ? value : max);
+
+        final similarityB = searchWords.map((word) {
+          return word.compareWith(
+            b.title.toLowerCase(),
+            SimilarityAlgorithm.jaroWinkler,
+          );
+        }).reduce((max, value) => value > max ? value : max);
+
+        return similarityB.compareTo(similarityA);
+      });
     });
+  }
+}
+
+class TileCard extends StatelessWidget {
+  final IconModel iconModel;
+  final Color color;
+
+  const TileCard({super.key, required this.iconModel, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    /// Displays a toast message using [Fluttertoast].
+    void _showToast({required String text, Color color = Colors.grey}) {
+      final isMobile = context.widthPx < 600;
+      Fluttertoast.showToast(
+        msg: text,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: color,
+        webBgColor: color.toHex(leadingHashSign: true),
+        textColor: color.contrastColor(),
+        webPosition: isMobile ? 'center' : 'right',
+        fontSize: 16.0,
+      );
+    }
+
+    /// Returns the text to copy based on the current copy mode from settings
+    Future<String> _getCopyText(IconModel icon) async {
+      final isNameMode = SettingsService().copyModeNotifier.value;
+      return isNameMode
+          ? 'EneftyIcons.${icon.title}'
+          : 'Icon(EneftyIcons.${icon.title})';
+    }
+
+    /// Handles copying text to the clipboard and showing a toast message.
+    Future<void> _onCopyPressed(IconModel icon, Color color) async {
+      try {
+        final textToCopy = await _getCopyText(icon);
+        await Clipboard.setData(ClipboardData(text: textToCopy));
+        _showToast(text: 'Copied to clipboard 🥳', color: color);
+      } catch (e) {
+        _showToast(text: 'Failed to copy 😢', color: Colors.red);
+      }
+    }
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+      child: ListTile(
+        leading: Icon(iconModel.icon, size: 50, color: color),
+        title: SelectableText(iconModel.title),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 5.0),
+          child: SelectableText(
+            'Usage: Icon(EneftyIcons.${iconModel.title})',
+          ),
+        ),
+        trailing: IconButton(
+          tooltip: 'Copy',
+          icon: const Icon(EneftyIcons.copy_outline),
+          onPressed: () => _onCopyPressed(iconModel, color),
+        ),
+      ),
+    );
   }
 }

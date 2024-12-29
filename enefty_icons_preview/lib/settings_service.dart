@@ -3,9 +3,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsService {
   static final SettingsService _instance = SettingsService._internal();
+
   factory SettingsService() => _instance;
 
-  final isDark = ValueNotifier<bool?>(null);
+  final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
   final copyModeNotifier = ValueNotifier<bool>(true);
 
   static const String _themeModeKey = 'themeMode';
@@ -18,8 +19,8 @@ class SettingsService {
   }
 
   void _setupListeners() {
-    isDark.addListener(() {
-      _sf?.setString(_themeModeKey, '${isDark.value}');
+    themeMode.addListener(() {
+      _sf?.setString(_themeModeKey, themeMode.value.name);
     });
 
     copyModeNotifier.addListener(() {
@@ -31,24 +32,19 @@ class SettingsService {
     _sf ??= await SharedPreferences.getInstance();
 
     // Load theme mode
-    final themeStr = _sf!.getString(_themeModeKey);
-    print(themeStr);
-    print(themeStr);
-    print(themeStr);
-    print(themeStr);
-    print(themeStr);
-    isDark.value = switch (themeStr) {
-      'true' => true,
-      'false' => false,
-      _ => null,
+    final themeModeStr = _sf!.getString(_themeModeKey);
+    themeMode.value = switch (themeModeStr) {
+      'light' => ThemeMode.light,
+      'dark' => ThemeMode.dark,
+      _ => ThemeMode.system,
     };
 
     // Load copy mode
     copyModeNotifier.value = _sf!.getBool(_copyModeKey) ?? true;
   }
 
-  void setThemeMode(bool? mode) {
-    isDark.value = mode;
+  void setThemeMode(ThemeMode mode) {
+    themeMode.value = mode;
   }
 
   void setCopyMode(bool isNameMode) {
