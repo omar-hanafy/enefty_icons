@@ -11,13 +11,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  fluttertoast: ^8.2.10
-  flutter_svg: ^2.0.16
+  fluttertoast: ^8.2.12
+  flutter_svg: ^2.0.17
   enefty_icons: ^1.0.7
-  flutter_helper_utils:
-    path: ../../flutter_helper_utils
+  dart_helper_utils: ^5.1.0
+  flutter_helper_utils: ^8.0.1
   url_launcher: ^6.3.1
-  shared_preferences: ^2.3.4
+  shared_preferences: ^2.5.2
 
 dev_dependencies:
   flutter_test:
