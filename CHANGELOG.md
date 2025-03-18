@@ -1,3 +1,9 @@
+## Version 1.0.8
+
+- Updated readme
+
+---
+
 ## Version 1.0.7
 
 - Resolved an issue where clicking on an image failed to open the preview website.
