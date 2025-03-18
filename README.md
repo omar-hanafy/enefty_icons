@@ -10,7 +10,7 @@ The repository specifically features two styles of icons: Outline and Bold.
 
 <p> <a href="https://omar-hanafy.github.io/enefty-icons/#/"><img src="https://raw.githubusercontent.com/omar-hanafy/nft-icons/main/icon_preview_1.0.0.png" alt="How example looks" width="500"> </a></p>
 
-Click the image to view a live demo on the [Enefty Icons website](https://omar-hanafy.github.io/enefty-icons/#/).
+Click the image to view a live demo on the [Enefty Icons website](https://omar-hanafy.github.io/enefty-icons).
 
 ## Installation and Usage
 
@@ -20,7 +20,7 @@ To install the package, add the following line to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  enefty_icons: ^1.0.7
+  enefty_icons: ^1.0.8
 ```
 
 ### Example Usage
@@ -40,3 +40,4 @@ dependencies:
 ## Reporting Issues
 
 For any issues or concerns, please [create a new issue](https://github.com/omar-hanafy/enefty_icons/issues) in the package repository.
+
