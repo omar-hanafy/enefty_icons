@@ -1,48 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+    <meta charset="UTF-8">
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+    <!-- Primary Meta Tags -->
+    <title>Enefty Icons Preview | 1000+ Beautiful Line & Solid Icons</title>
+    <meta name="description"
+          content="Browse, search and copy 1000+ beautiful Enefty Icons for your Flutter and mobile apps. Easily find the perfect icon with advanced search.">
+    <meta name="keywords" content="flutter icons, enefty icons, icon pack, icon library, flutter ui">
+    <meta name="author" content="Omar Hanafy">
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://omar-hanafy.github.io/enefty-icons/">
+    <meta property="og:title" content="Enefty Icons Preview | 1000+ Beautiful Line & Solid Icons">
+    <meta property="og:description"
+          content="Browse, search and copy 1000+ beautiful Enefty Icons for your Flutter and mobile apps. Easily find the perfect icon with advanced search.">
+    <meta property="og:image" content="https://omar-hanafy.github.io/enefty-icons/social-preview.png">
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="$FLUTTER_BASE_HREF">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://omar-hanafy.github.io/enefty-icons/">
+    <meta property="twitter:title" content="Enefty Icons Preview | 1000+ Beautiful Line & Solid Icons">
+    <meta property="twitter:description"
+          content="Browse, search and copy 1000+ beautiful Enefty Icons for your Flutter and mobile apps. Easily find the perfect icon with advanced search.">
+    <meta property="twitter:image" content="https://omar-hanafy.github.io/enefty-icons/social-preview.png">
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+    <!-- Theme Color for Browser UI -->
+    <meta name="theme-color" content="#673AB7">
 
-  <!-- iOS meta tags & icons -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="enefty_icons_preview">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Enefty Icons">
+    <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="manifest" href="manifest.json">
 
-  <title>enefty_icons_preview</title>
-  <link rel="manifest" href="manifest.json">
+    <!-- Styling for the loading indicator -->
+    <style>
+        body {
+            background-color: #121212;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            transition: background-color 0.3s ease;
+        }
 
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    var serviceWorkerVersion = null;
-  </script>
-  <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
+        .center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .center img {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 24px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #673AB7;
+            border-radius: 50%;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        body.light-mode .loader {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top-color: #673AB7;
+        }
+
+        .loading-text {
+            color: #e0e0e0;
+            font-size: 18px;
+            margin-top: 8px;
+        }
+
+        body.light-mode .loading-text {
+            color: #424242;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+    <!-- Flutter initialization script (deferred) -->
+    <script defer src="flutter.js"></script>
+
+    <!-- This value is injected by flutter build, do not touch -->
+    <script>
+        const serviceWorkerVersion = "838624511";
+    </script>
 </head>
 <body>
-  <script>
+<!-- Splash Screen Container with an ID for easy removal -->
+<div id="splash" class="center">
+    <img src="favicon.png" alt="Enefty Icons Logo">
+    <div class="loader"></div>
+    <div class="loading-text">Loading Enefty Icons...</div>
+</div>
+
+<!-- Flutter App Initialization -->
+<script>
     window.addEventListener('load', function(ev) {
-      // Download main.dart.js
       _flutter.loader.loadEntrypoint({
         serviceWorker: {
           serviceWorkerVersion: serviceWorkerVersion,
@@ -50,10 +140,54 @@
         onEntrypointLoaded: function(engineInitializer) {
           engineInitializer.initializeEngine().then(function(appRunner) {
             appRunner.runApp();
+            // Remove the splash screen after the app starts
+            var splash = document.getElementById('splash');
+            if (splash) {
+              splash.remove();
+            }
           });
         }
       });
     });
-  </script>
+</script>
+
+<!-- Light-mode detection moved here to ensure the body is loaded -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user prefers light mode and update the body class accordingly
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        document.body.classList.add('light-mode');
+      }
+      // Listen for changes in the preferred color scheme
+      window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function(event) {
+        if (event.matches) {
+          document.body.classList.add('light-mode');
+        } else {
+          document.body.classList.remove('light-mode');
+        }
+      });
+    });
+</script>
+
+<!-- Structured data for search engines -->
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Enefty Icons Preview",
+        "description": "Browse, search and copy 1000+ beautiful Enefty Icons for your Flutter and mobile apps.",
+        "operatingSystem": "Web",
+        "applicationCategory": "DesignApplication",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Omar Hanafy"
+        }
+    }
+</script>
 </body>
 </html>

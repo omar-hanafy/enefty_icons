@@ -66,8 +66,8 @@ class _IconsPreviewPageState extends State<IconsPreviewPage> {
   /// Icons filtered according to the current search query.
   late List<_RankedIconModel> _filteredIcons;
 
-  // Default for similarity is 0.4
-  double _similarityThreshold = 0.4;
+  // Lower threshold to catch more fuzzy matches
+  double _similarityThreshold = 0.3;
 
   // Default algorithm is Jaro-Winkler
   SimilarityAlgorithm _currentAlgorithm = SimilarityAlgorithm.jaroWinkler;
@@ -105,6 +105,8 @@ class _IconsPreviewPageState extends State<IconsPreviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: _isSearching
@@ -408,9 +410,27 @@ class _IconsPreviewPageState extends State<IconsPreviewPage> {
     final searchWords = trimmedQuery.split(RegExp(r'\s+'));
 
     final rankedIcons = _allIcons.map((icon) {
-      final title = icon.title;
+      final title = icon.title.toLowerCase();
 
-      // Find the maximum similarity score across all search words
+      // Check for prefix matches first (highest priority)
+      for (final word in searchWords) {
+        final lowercaseWord = word.toLowerCase();
+        // If the icon title starts with the search word, give it a perfect score
+        if (title.startsWith(lowercaseWord)) {
+          return _RankedIconModel(icon, 1.0);
+        }
+      }
+
+      // Check for substring matches (high priority)
+      for (final word in searchWords) {
+        final lowercaseWord = word.toLowerCase();
+        // If the icon title contains the search word, give it a high score
+        if (title.contains(lowercaseWord)) {
+          return _RankedIconModel(icon, 0.9);
+        }
+      }
+
+      // Fall back to string similarity for fuzzy matching
       double maxSimilarity = 0.0;
       for (final word in searchWords) {
         final similarity = StringSimilarity.compare(
@@ -439,15 +459,24 @@ class _IconsPreviewPageState extends State<IconsPreviewPage> {
   }
 
   // Helper method to convert algorithm to display string
-  String _algorithmToString(SimilarityAlgorithm algorithm) =>
-      switch (algorithm) {
-        SimilarityAlgorithm.jaroWinkler => 'Jaro-Winkler',
-        SimilarityAlgorithm.levenshteinDistance => 'Levenshtein',
-        SimilarityAlgorithm.diceCoefficient => 'Dice',
-        SimilarityAlgorithm.jaro => 'Jaro',
-        SimilarityAlgorithm.cosine => 'Cosine',
-        SimilarityAlgorithm.soundex => 'Soundex',
-      };
+  String _algorithmToString(SimilarityAlgorithm algorithm) {
+    switch (algorithm) {
+      case SimilarityAlgorithm.jaroWinkler:
+        return 'Jaro-Winkler';
+      case SimilarityAlgorithm.levenshteinDistance:
+        return 'Levenshtein';
+      case SimilarityAlgorithm.diceCoefficient:
+        return 'Dice';
+      case SimilarityAlgorithm.jaro:
+        return 'Jaro';
+      case SimilarityAlgorithm.cosine:
+        return 'Cosine';
+      case SimilarityAlgorithm.soundex:
+        return 'Soundex';
+      default:
+        return algorithm.toString().split('.').last;
+    }
+  }
 }
 
 /// A ranked icon model with similarity score
