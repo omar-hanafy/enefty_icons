@@ -1,3 +1,10 @@
+## Version 1.0.9
+
+- Improved icon copy experience with overlay feedback and snippet helpers in the website.
+- Marked the icon class with the @staticIconProvider annotation.
+
+---
+
 ## Version 1.0.8
 
 - Updated readme

@@ -1,12 +1,14 @@
+import 'dart:async';
+
 import 'package:enefty_icons/enefty_icons.dart';
-import 'package:enefty_icons_preview/icon_model.dart';
 import 'package:enefty_icons_preview/settings_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_helper_utils/flutter_helper_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'icon_model.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -105,8 +107,6 @@ class _IconsPreviewPageState extends State<IconsPreviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
         title: _isSearching
@@ -164,14 +164,14 @@ class _IconsPreviewPageState extends State<IconsPreviewPage> {
           Icon(
             EneftyIcons.search_normal_outline,
             size: 64,
-            color: Colors.grey.addOpacity(0.5),
+            color: Colors.grey.setOpacity(0.5),
           ),
           const SizedBox(height: 16),
           Text(
             'No icons found matching "${_searchController.text}"',
             style: TextStyle(
               fontSize: 18,
-              color: Colors.grey.addOpacity(0.8),
+              color: Colors.grey.setOpacity(0.8),
             ),
           ),
           const SizedBox(height: 8),
@@ -270,7 +270,7 @@ class _IconsPreviewPageState extends State<IconsPreviewPage> {
                 ),
                 isDense: true,
               ),
-              value: _currentAlgorithm,
+              initialValue: _currentAlgorithm,
               items: SimilarityAlgorithm.values.map((algorithm) {
                 return DropdownMenuItem(
                   value: algorithm,
@@ -515,9 +515,7 @@ class TileCard extends StatelessWidget {
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 5.0),
-          child: SelectableText(
-            'Usage: Icon(EneftyIcons.${iconModel.title})',
-          ),
+          child: SelectableText('Usage: ${iconModel.widgetUsageSnippet}'),
         ),
         trailing: IconButton(
           tooltip: 'Copy',
@@ -532,7 +530,7 @@ class TileCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: color.addOpacity(0.1),
+        color: color.setOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Icon(iconModel.icon, size: 36, color: color),
@@ -546,7 +544,7 @@ class TileCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
-          color: _getScoreColor().addOpacity(0.2),
+          color: _getScoreColor().setOpacity(0.2),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
@@ -569,33 +567,285 @@ class TileCard extends StatelessWidget {
 
   /// Handles copying text to the clipboard and showing a toast message.
   Future<void> _onCopyPressed(BuildContext context) async {
-    try {
-      final isNameMode = SettingsService().copyModeNotifier.value;
-      final textToCopy = isNameMode
-          ? 'EneftyIcons.${iconModel.title}'
-          : 'Icon(EneftyIcons.${iconModel.title})';
+    await _copyIconToClipboard(context, iconModel, color);
+  }
+}
 
-      await Clipboard.setData(ClipboardData(text: textToCopy));
-      _showToast(context, text: 'Copied to clipboard 🥳', color: color);
-    } catch (e) {
-      _showToast(context, text: 'Failed to copy 😢', color: Colors.red);
+enum _CopyRequest { respectPreference, nameOnly, widgetOnly }
+
+Future<void> _copyIconToClipboard(
+  BuildContext context,
+  IconModel iconModel,
+  Color accentColor, {
+  _CopyRequest request = _CopyRequest.respectPreference,
+  String? successMessage,
+}) async {
+  try {
+    final nameSnippet = iconModel.nameUsageSnippet;
+    final widgetSnippet = iconModel.widgetUsageSnippet;
+
+    late final String textToCopy;
+    switch (request) {
+      case _CopyRequest.nameOnly:
+        textToCopy = nameSnippet;
+        break;
+      case _CopyRequest.widgetOnly:
+        textToCopy = widgetSnippet;
+        break;
+      case _CopyRequest.respectPreference:
+        final isNameMode = SettingsService().copyModeNotifier.value;
+        textToCopy = isNameMode ? nameSnippet : widgetSnippet;
+        break;
+    }
+
+    final resolvedSuccessMessage = successMessage ??
+        () {
+          switch (request) {
+            case _CopyRequest.nameOnly:
+              return 'Name copied 🥳';
+            case _CopyRequest.widgetOnly:
+              return 'Widget copied 🥳';
+            case _CopyRequest.respectPreference:
+              return 'Copied to clipboard 🥳';
+          }
+        }();
+
+    await Clipboard.setData(ClipboardData(text: textToCopy));
+    if (context.mounted) {
+      _showCopyFeedback(
+        context,
+        message: resolvedSuccessMessage,
+        color: accentColor,
+      );
+    }
+  } catch (e) {
+    if (context.mounted) {
+      final errorColor = Theme.of(context).colorScheme.error;
+      _showCopyFeedback(
+        context,
+        message: 'Failed to copy 😢',
+        color: errorColor,
+        isError: true,
+      );
+    }
+  }
+}
+
+OverlayEntry? _copyFeedbackEntry;
+
+void _showCopyFeedback(
+  BuildContext context, {
+  required String message,
+  required Color color,
+  bool isError = false,
+}) {
+  final theme = Theme.of(context);
+  final isDesktopExperience = context.isDesktop || context.isDesktopWeb;
+  final bool isMobileExperience = context.isMobile || context.isMobileWeb;
+
+  final Color baseAccent = color;
+  late final Color backgroundColor;
+  late final Color foregroundColor;
+  late final Color shadowColor;
+  late final IconData iconData;
+
+  if (isDesktopExperience) {
+    if (isError) {
+      backgroundColor = theme.colorScheme.errorContainer;
+      foregroundColor = theme.colorScheme.onErrorContainer;
+      shadowColor = theme.colorScheme.error.setOpacity(0.2);
+      iconData = Icons.error_outline;
+    } else {
+      backgroundColor = Color.alphaBlend(
+        baseAccent.setOpacity(0.14),
+        theme.colorScheme.surface,
+      );
+      foregroundColor = theme.colorScheme.onSurface;
+      shadowColor = baseAccent.setOpacity(0.26);
+      iconData = Icons.check_circle_outline;
+    }
+  } else {
+    backgroundColor = baseAccent;
+    foregroundColor = backgroundColor.contrastColor();
+    shadowColor = baseAccent.setOpacity(0.28);
+    iconData = isError ? Icons.error_outline : Icons.check_circle_outline;
+  }
+
+  if (isDesktopExperience && !isMobileExperience) {
+    final overlay = Overlay.maybeOf(context, rootOverlay: true);
+    if (overlay == null) return;
+
+    _copyFeedbackEntry?.remove();
+    _copyFeedbackEntry = null;
+
+    late OverlayEntry entry;
+    entry = OverlayEntry(
+      builder: (ctx) => _CopyNotificationOverlay(
+        message: message,
+        backgroundColor: backgroundColor,
+        foregroundColor: foregroundColor,
+        shadowColor: shadowColor,
+        icon: iconData,
+        onDismissed: () {
+          if (entry.mounted) {
+            entry.remove();
+          }
+          if (identical(_copyFeedbackEntry, entry)) {
+            _copyFeedbackEntry = null;
+          }
+        },
+      ),
+    );
+
+    _copyFeedbackEntry = entry;
+    overlay.insert(entry);
+    return;
+  }
+
+  final messenger = ScaffoldMessenger.maybeOf(context);
+  if (messenger == null) return;
+
+  messenger
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: theme.textTheme.bodyMedium?.copyWith(color: foregroundColor),
+        ),
+        backgroundColor: backgroundColor,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        duration: const Duration(milliseconds: 1800),
+        action: SnackBarAction(
+          label: 'Dismiss',
+          textColor: foregroundColor,
+          onPressed: messenger.hideCurrentSnackBar,
+        ),
+      ),
+    );
+}
+
+class _CopyNotificationOverlay extends StatefulWidget {
+  const _CopyNotificationOverlay({
+    required this.message,
+    required this.backgroundColor,
+    required this.foregroundColor,
+    required this.shadowColor,
+    required this.icon,
+    required this.onDismissed,
+  }) : displayDuration = const Duration(milliseconds: 2200);
+
+  final String message;
+  final Color backgroundColor;
+  final Color foregroundColor;
+  final Color shadowColor;
+  final IconData icon;
+  final VoidCallback onDismissed;
+  final Duration displayDuration;
+
+  @override
+  State<_CopyNotificationOverlay> createState() =>
+      _CopyNotificationOverlayState();
+}
+
+class _CopyNotificationOverlayState extends State<_CopyNotificationOverlay>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 200),
+    reverseDuration: const Duration(milliseconds: 160),
+  );
+
+  late final Animation<double> _opacity = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeOutCubic,
+    reverseCurve: Curves.easeInCubic,
+  );
+
+  Timer? _autoDismissTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.forward();
+    _autoDismissTimer = Timer(widget.displayDuration, _dismiss);
+  }
+
+  @override
+  void dispose() {
+    _autoDismissTimer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _dismiss() async {
+    if (!mounted) return;
+    if (_controller.status != AnimationStatus.dismissed) {
+      await _controller.reverse();
+    }
+    if (mounted) {
+      widget.onDismissed();
     }
   }
 
-  /// Displays a toast message using [Fluttertoast].
-  void _showToast(BuildContext context,
-      {required String text, Color color = Colors.grey}) {
-    final isMobile = context.widthPx < 600;
-    Fluttertoast.showToast(
-      msg: text,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 2,
-      backgroundColor: color,
-      webBgColor: color.toHex(leadingHashSign: true),
-      textColor: color.contrastColor(),
-      webPosition: isMobile ? 'center' : 'right',
-      fontSize: 16.0,
+  @override
+  Widget build(BuildContext context) {
+    final textColor = widget.foregroundColor;
+    return Positioned(
+      top: 16,
+      right: 16,
+      child: SafeArea(
+        child: FadeTransition(
+          opacity: _opacity,
+          child: Material(
+            color: Colors.transparent,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: widget.backgroundColor,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: widget.shadowColor,
+                    blurRadius: 18,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(widget.icon, color: textColor, size: 20),
+                    const SizedBox(width: 10),
+                    Text(
+                      widget.message,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: textColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      onPressed: _dismiss,
+                      icon: Icon(Icons.close, color: textColor, size: 18),
+                      padding: EdgeInsets.zero,
+                      visualDensity: VisualDensity.compact,
+                      splashRadius: 18,
+                      tooltip: 'Dismiss',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -638,11 +888,9 @@ class IconGridTile extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              Text(
-                iconModel.title,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              _GridIconTitle(
+                iconModel: iconModel,
+                color: color,
               ),
               const SizedBox(height: 4),
               Row(
@@ -667,7 +915,7 @@ class IconGridTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
-          color: _getScoreColor().addOpacity(0.2),
+          color: _getScoreColor().setOpacity(0.2),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
@@ -690,33 +938,36 @@ class IconGridTile extends StatelessWidget {
 
   /// Handles copying text to the clipboard and showing a toast message.
   Future<void> _onCopyPressed(BuildContext context) async {
-    try {
-      final isNameMode = SettingsService().copyModeNotifier.value;
-      final textToCopy = isNameMode
-          ? 'EneftyIcons.${iconModel.title}'
-          : 'Icon(EneftyIcons.${iconModel.title})';
-
-      await Clipboard.setData(ClipboardData(text: textToCopy));
-      _showToast(context, text: 'Copied to clipboard 🥳', color: color);
-    } catch (e) {
-      _showToast(context, text: 'Failed to copy 😢', color: Colors.red);
-    }
+    await _copyIconToClipboard(context, iconModel, color);
   }
+}
 
-  /// Displays a toast message using [Fluttertoast].
-  void _showToast(BuildContext context,
-      {required String text, Color color = Colors.grey}) {
-    final isMobile = context.widthPx < 600;
-    Fluttertoast.showToast(
-      msg: text,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 2,
-      backgroundColor: color,
-      webBgColor: color.toHex(leadingHashSign: true),
-      textColor: color.contrastColor(),
-      webPosition: isMobile ? 'center' : 'right',
-      fontSize: 16.0,
+class _GridIconTitle extends StatelessWidget {
+  const _GridIconTitle({
+    required this.iconModel,
+    required this.color,
+  });
+
+  final IconModel iconModel;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: SelectableText(
+        iconModel.title,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+        maxLines: 1,
+        textAlign: TextAlign.center,
+        onTap: () => _copyIconToClipboard(
+          context,
+          iconModel,
+          color,
+          request: _CopyRequest.nameOnly,
+          successMessage: 'Name copied 🥳',
+        ),
+      ),
     );
   }
 }
