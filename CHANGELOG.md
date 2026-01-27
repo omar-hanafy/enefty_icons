@@ -1,3 +1,7 @@
+## Version 1.0.10
+
+- Added `matchTextDirection: true` to all directional arrow icons (`arrow_left_*`, `arrow_right_*`) for proper RTL/LTR support.
+
 ## Version 1.0.9
 
 - Improved icon copy experience with overlay feedback and snippet helpers in the website.

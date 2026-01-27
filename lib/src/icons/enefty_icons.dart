@@ -287,54 +287,54 @@ abstract class EneftyIcons {
       IconData(0xe858, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 
   /// USAGE: AppIcons.arrow_left_2_bold/outline
-  static const IconData arrow_left_2_bold =
-      IconData(0xe859, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData arrow_left_2_outline =
-      IconData(0xe85a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData arrow_left_2_bold = IconData(0xe859,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
+  static const IconData arrow_left_2_outline = IconData(0xe85a,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
 
   /// USAGE: AppIcons.arrow_left_3_bold/outline
-  static const IconData arrow_left_3_bold =
-      IconData(0xe85b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData arrow_left_3_outline =
-      IconData(0xe85c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData arrow_left_3_bold = IconData(0xe85b,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
+  static const IconData arrow_left_3_outline = IconData(0xe85c,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
 
   /// USAGE: AppIcons.arrow_left_4_bold/outline
-  static const IconData arrow_left_4_bold =
-      IconData(0xe85d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData arrow_left_4_outline =
-      IconData(0xe85e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData arrow_left_4_bold = IconData(0xe85d,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
+  static const IconData arrow_left_4_outline = IconData(0xe85e,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
 
   /// USAGE: AppIcons.arrow_left_bold/outline
-  static const IconData arrow_left_bold =
-      IconData(0xe85f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData arrow_left_outline =
-      IconData(0xe860, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData arrow_left_bold = IconData(0xe85f,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
+  static const IconData arrow_left_outline = IconData(0xe860,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
   static const IconData arrow_outline =
       IconData(0xe861, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 
   /// USAGE: AppIcons.arrow_right_2_bold/outline
-  static const IconData arrow_right_2_bold =
-      IconData(0xe862, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData arrow_right_2_outline =
-      IconData(0xe863, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData arrow_right_2_bold = IconData(0xe862,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
+  static const IconData arrow_right_2_outline = IconData(0xe863,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
 
   /// USAGE: AppIcons.arrow_right_3_bold/outline
-  static const IconData arrow_right_3_bold =
-      IconData(0xe864, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData arrow_right_3_outline =
-      IconData(0xe865, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData arrow_right_3_bold = IconData(0xe864,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
+  static const IconData arrow_right_3_outline = IconData(0xe865,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
 
   /// USAGE: AppIcons.arrow_right_4_bold/outline
-  static const IconData arrow_right_4_bold =
-      IconData(0xe866, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData arrow_right_4_outline =
-      IconData(0xe867, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData arrow_right_4_bold = IconData(0xe866,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
+  static const IconData arrow_right_4_outline = IconData(0xe867,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
 
   /// USAGE: AppIcons.arrow_right_bold/outline
-  static const IconData arrow_right_bold =
-      IconData(0xe868, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData arrow_right_outline =
-      IconData(0xe869, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData arrow_right_bold = IconData(0xe868,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
+  static const IconData arrow_right_outline = IconData(0xe869,
+      fontFamily: _kFontFam, fontPackage: _kFontPkg, matchTextDirection: true);
 
   /// USAGE: AppIcons.arrow_square_bold/outline
   static const IconData arrow_square_bold =

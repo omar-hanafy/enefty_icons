@@ -20,7 +20,7 @@ To install the package, add the following line to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  enefty_icons: ^1.0.8
+  enefty_icons: ^1.0.10
 ```
 
 ### Example Usage
