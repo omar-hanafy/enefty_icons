@@ -1,0 +1,140 @@
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "enefty_icons_preview/**"
+      - "lib/**"
+      - "pubspec.yaml"
+      - ".github/workflows/pages.yml"
+  pull_request:
+    paths:
+      - "enefty_icons_preview/**"
+      - "lib/**"
+      - "pubspec.yaml"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # A project site is served from https://<user>.github.io/<repo>/, so the app
+  # must be built for that subpath. Leading and trailing slash are both
+  # required by `flutter build web --base-href`.
+  BASE_HREF: /enefty_icons/
+  # Relative to enefty_icons_preview, not to the repository root.
+  #
+  # The published site is the searchable icon gallery in enefty_icons_preview,
+  # NOT example/. example/lib/main.dart renders a single centred icon and is
+  # the pub.dev example, not the website. The app directory is repeated
+  # literally below because `defaults.run.working-directory` and an action's
+  # `with:` inputs cannot read the `env` context.
+  ENTRYPOINT: lib/main.dart
+
+jobs:
+  build:
+    name: Build icon gallery
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    concurrency:
+      # A new commit supersedes an older build of the same pull request. Main
+      # builds serialize so an older build cannot reach production after a
+      # newer one.
+      group: pages-build-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    defaults:
+      run:
+        working-directory: enefty_icons_preview
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build
+        run: |
+          flutter build web \
+            --release \
+            --wasm \
+            --base-href "$BASE_HREF" \
+            -t "$ENTRYPOINT"
+
+      - name: Verify the built base href
+        # A wrong base href is the failure mode for project sites: the page
+        # loads, then every asset 404s and the app never paints. Cheaper to
+        # fail here than to discover it as a white screen in production.
+        #
+        # This also guards the `<base href="$FLUTTER_BASE_HREF">` placeholder
+        # in web/index.html. Without that placeholder `flutter build web`
+        # refuses to apply --base-href at all.
+        run: |
+          actual=$(grep -o '<base href="[^"]*">' build/web/index.html || true)
+          expected="<base href=\"$BASE_HREF\">"
+          if [ "$actual" != "$expected" ]; then
+            echo "Expected $expected but the build produced ${actual:-no base href tag}."
+            exit 1
+          fi
+          echo "$actual"
+
+      - name: Verify the gallery entrypoint was built
+        # Guards against -t being dropped or aimed at a valid-but-wrong file,
+        # which silently publishes a bare one-icon demo in place of the
+        # gallery. This cannot be checked against index.html: web/index.html
+        # is shared by every entrypoint, so the target leaves no trace in it.
+        # Only the compiled output differs.
+        #
+        # MARKER is a user-visible string that exists solely in the gallery -
+        # it is the app bar title. If this step fails after a copy edit,
+        # update MARKER to match.
+        run: |
+          MARKER="Enefty Icons Preview"
+          if ! grep -qF "$MARKER" build/web/main.dart.js; then
+            echo "Built output does not contain the gallery marker: $MARKER"
+            echo "Either $ENTRYPOINT is no longer the gallery, or the copy changed."
+            exit 1
+          fi
+
+      - name: Configure Pages
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - name: Upload Pages artifact
+        # `defaults.run.working-directory` does not apply to an action's `with:`
+        # inputs, so this path is relative to the repository root.
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: enefty_icons_preview/build/web
+
+  deploy:
+    name: Deploy to GitHub Pages
+    # Pull requests and manual dispatches from non-main branches build and
+    # verify, but never publish.
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    concurrency:
+      # GitHub Pages has one production target. Serialize every deployment
+      # regardless of the triggering run or branch ref.
+      group: pages-production
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
